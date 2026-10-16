@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>每日職場靈修</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap">
+<style>
+:root{--bg:#EEF2F5;--card:#fff;--text:#1B2B38;--sub:#5A6B78;--head:#1F3A4D;--hs:#C9D6DF;--ac:#E3B866;--btn:#1F3A4D;--bt:#fff;--ok:#2F7A55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#182731;--text:#E8EEF2;--sub:#9FB0BC;--head:#162B3A;--hs:#9FB0BC;--btn:#E3B866;--bt:#1B2B38;--ok:#6CCB98;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A22;--card:#182731;--text:#E8EEF2;--sub:#9FB0BC;--head:#162B3A;--hs:#9FB0BC;--btn:#E3B866;--bt:#1B2B38;--ok:#6CCB98;color-scheme:dark}
+[hidden]{display:none!important}
+html{background:var(--head)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
+.w{max-width:480px;margin:0 auto}
+header{background:var(--head);color:#fff;padding:28px 24px 24px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.nm{font-size:13px;letter-spacing:2px;color:var(--hs)}
+.sl{font-family:'Noto Serif TC',serif;font-size:15px;color:var(--ac);margin:4px 0 16px}
+.dr{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dr button{width:44px;height:44px;border:1px solid var(--hs);border-radius:22px;background:none;color:#fff;font-size:22px;cursor:pointer}
+#date{font-size:26px;font-weight:700;text-align:center}
+#wk{font-size:15px;color:var(--ac);text-align:center;margin-top:2px}
+.ch{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-top:14px;font-size:12px;color:var(--hs)}
+.sk{text-align:center;margin-top:14px;font-size:14px;font-weight:700;color:var(--ac)}
+#today{display:block;margin:12px auto 0;background:none;border:0;color:var(--ac);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;min-height:44px}
+main{padding:16px 16px 32px;display:flex;flex-direction:column;gap:14px}
+.c{background:var(--card);border-radius:16px;padding:22px}
+h2{margin:0 0 10px;font-size:13px;letter-spacing:2px;color:var(--sub)}
+#verse{font-family:'Noto Serif TC',serif;font-size:21px;line-height:1.7;font-weight:500;margin:0}
+#ref{margin:10px 0 0;font-size:14px;color:var(--sub)}
+.t{font-size:16px;line-height:1.9;margin:0}
+ol{margin:0;padding:0;list-style:none;counter-reset:q;display:flex;flex-direction:column;gap:12px}
+li{counter-increment:q;display:flex;gap:12px;font-size:16px;line-height:1.8}
+li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13px;background:var(--btn);color:var(--bt);font-size:13px;text-align:center;line-height:26px}
+#done{min-height:52px;border:0;border-radius:26px;background:var(--btn);color:var(--bt);font:inherit;font-size:17px;font-weight:700;cursor:pointer}
+#done.on{background:none;border:2px solid var(--ok);color:var(--ok)}
+.f{text-align:center;font-size:12px;color:var(--sub);line-height:1.7}
+</style>
+</head>
+<body>
+<div class="w">
+<header>
+<div class="top"><span class="nm">每日職場靈修</span></div>
+<div class="sl">職場日常，因主而不同</div>
+<div class="dr">
+<button id="prev" aria-label="前一天">‹</button>
+<div><div id="date"></div><div id="wk"></div></div>
+<button id="next" aria-label="後一天">›</button>
+</div>
+<button id="today" hidden>回到今天</button>
+<div class="ch"><span>讀經 1 分</span><span>·</span><span>默想 3 分</span><span>·</span><span>鼓勵 1 分</span><span>·</span><span>禱告 2 分</span></div>
+<div class="sk" id="streak"></div>
+</header>
+<main>
+<section class="c dy"><h2>今日經文</h2><p id="verse"></p><p id="ref"></p></section>
+<section class="c dy"><h2>默想方向</h2><ol id="med"></ol></section>
+<section class="c dy"><h2>鼓勵的話</h2><p class="t" id="enc"></p></section>
+<section class="c dy"><h2>禱告</h2><p class="t" id="pray"></p></section>
+<section class="c" id="end" hidden><h2>靈修完成</h2><p class="t">感謝神，你已經走完這一輪的靈修。新的內容正在預備中，請過些日子再回來。願主的話語繼續與你同行。</p></section>
+<button id="done" class="dy" aria-pressed="false">完成今日靈修</button>
+<div class="f">所有內容皆取自聖經（和合本）<br>目前內容共 60 天</div>
+</main>
+</div>
+<script>
+let D=[],START="";
+const W="日一二三四五六",$=id=>document.getElementById(id);
+let off=0;
+function pad(n){return String(n).padStart(2,"0")}
+function isDone(d){try{return localStorage.getItem("done:"+d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()))==="1"}catch(e){return false}}
+function streakText(){const d=new Date();let n=0;if(!isDone(d))d.setDate(d.getDate()-1);while(n<1000&&isDone(d)){n++;d.setDate(d.getDate()-1)}return n>0?"連續 "+n+" 天靈修":"完成今日靈修，開始累積連續天數"}
+function render(){
+if(!D.length)return;
+const d=new Date();d.setDate(d.getDate()+off);
+const key=d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.parse(START+"T00:00:00Z"))/864e5);
+const i=Math.min(Math.max(n,0),D.length-1);
+const over=n>=D.length;
+document.querySelectorAll(".dy").forEach(e=>e.hidden=over);
+$("end").hidden=!over;
+const x=D[i];
+$("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";
+$("wk").textContent="星期"+W[d.getDay()]+(off===0?" · 今天":"")+" · "+(n<0?"尚未開始":over?"本輪已完成":"第 "+(i+1)+" 天");
+$("ref").textContent=x.r+"（和合本）";
+$("verse").textContent=x.v;
+$("pray").textContent=x.p;
+$("enc").textContent=x.e;
+$("med").textContent="";
+x.m.forEach(q=>{const li=document.createElement("li");li.textContent=q;$("med").appendChild(li)});
+$("today").hidden=off===0;
+let done=false;
+try{done=localStorage.getItem("done:"+key)==="1"}catch(e){}
+const b=$("done");
+b.textContent=done?"已完成今日靈修 ✓":"完成今日靈修";
+b.setAttribute("aria-pressed",done);
+b.classList.toggle("on",done);
+$("streak").textContent=streakText();
+b.onclick=()=>{try{localStorage.setItem("done:"+key,done?"0":"1")}catch(e){}render()};
+}
+$("prev").onclick=()=>{off--;render()};
+$("next").onclick=()=>{off++;render()};
+$("today").onclick=()=>{off=0;render()};
+async function init(){
+try{const r=await fetch("content.json",{cache:"no-cache"});const j=await r.json();D=j.days;START=j.startDate;render()}
+catch(e){document.querySelector("main").innerHTML='<div class="c"><p class="t">內容暫時無法載入，請稍後再試。</p></div>'}
+}
+init();
+</script>
+</body>
+</html>
