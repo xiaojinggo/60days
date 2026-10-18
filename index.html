@@ -21,6 +21,13 @@ details.c summary{cursor:pointer;font-size:17px;font-weight:700;min-height:44px;
 blockquote{margin:0 0 14px;padding-left:12px;border-left:3px solid var(--ac)}
 .tv{font-family:'Noto Serif TC',serif;font-size:17px;line-height:1.8;margin:0}
 .tr{font-size:13px;color:var(--sub);margin:4px 0 0}
+#splash{position:fixed;inset:0;z-index:100;background:var(--head);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;text-align:center;cursor:pointer;transition:opacity .5s;animation:so .5s ease 2.6s forwards}
+#splash.out{opacity:0;pointer-events:none}
+#splash .n{font-family:'Noto Serif TC',serif;font-size:34px;font-weight:700;letter-spacing:4px}
+#splash .s{font-family:'Noto Serif TC',serif;font-size:17px;letter-spacing:2px;color:var(--ac)}
+#splash .v{position:absolute;bottom:calc(32px + env(safe-area-inset-bottom,0px));font-size:12px;color:var(--hs)}
+@keyframes so{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#splash{transition:none}}
 html{background:var(--head)}
 body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
 .w{max-width:480px;margin:0 auto}
@@ -50,6 +57,12 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 </style>
 </head>
 <body>
+<div id="splash" role="presentation">
+<svg width="88" height="88" viewBox="0 0 88 88" fill="none" stroke="#E3B866" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M44 24C36 18 24 17 14 19V66C24 64 36 65 44 71C52 65 64 64 74 66V19C64 17 52 18 44 24Z"/><path d="M44 24V71"/><path d="M44 32V50M37 39H51"/></svg>
+<div class="n">每日職場靈修</div>
+<div class="s">職場日常，因主而不同</div>
+<div class="v">聖經和合本 · 內容皆取自聖經</div>
+</div>
 <div class="w">
 <header>
 <nav class="tabs" aria-label="頁籤"><button id="tb1" class="on" aria-pressed="true">每日靈修</button><button id="tb2" aria-pressed="false">主題經文</button></nav>
@@ -122,6 +135,10 @@ catch(e){document.querySelector("main").innerHTML='<div class="c"><p class="t">�
 }
 $("tb1").onclick=()=>show(false);
 $("tb2").onclick=()=>show(true);
+(function(){const s=$("splash");let seen=false;try{seen=sessionStorage.getItem("splash")==="1"}catch(e){}
+function hide(){s.classList.add("out");setTimeout(()=>s.remove(),600);try{sessionStorage.setItem("splash","1")}catch(e){}}
+if(seen){s.remove();return}
+s.onclick=hide;setTimeout(hide,1800)})();
 init();
 </script>
 </body>
