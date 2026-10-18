@@ -10,6 +10,17 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A22;--card:#182731;--text:#E8EEF2;--sub:#9FB0BC;--head:#162B3A;--hs:#9FB0BC;--btn:#E3B866;--bt:#1B2B38;--ok:#6CCB98;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0F1A22;--card:#182731;--text:#E8EEF2;--sub:#9FB0BC;--head:#162B3A;--hs:#9FB0BC;--btn:#E3B866;--bt:#1B2B38;--ok:#6CCB98;color-scheme:dark}
 [hidden]{display:none!important}
+.tabs{display:flex;gap:8px;margin-top:16px}
+.tabs button{flex:1;min-height:44px;border-radius:22px;border:1px solid var(--hs);background:none;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#1B2B38;border-color:var(--ac);font-weight:700}
+#hdTopics{text-align:center;margin-top:8px}
+#hdTopics b{display:block;font-size:26px}
+#hdTopics span{font-size:14px;color:var(--hs)}
+details.c summary{cursor:pointer;font-size:17px;font-weight:700;min-height:44px;display:flex;align-items:center}
+.sb{margin:4px 0 14px;font-size:14px;color:var(--sub)}
+blockquote{margin:0 0 14px;padding-left:12px;border-left:3px solid var(--ac)}
+.tv{font-family:'Noto Serif TC',serif;font-size:17px;line-height:1.8;margin:0}
+.tr{font-size:13px;color:var(--sub);margin:4px 0 0}
 html{background:var(--head)}
 body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;min-height:100vh}
 .w{max-width:480px;margin:0 auto}
@@ -43,16 +54,18 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 <header>
 <div class="top"><span class="nm">每日職場靈修</span></div>
 <div class="sl">職場日常，因主而不同</div>
-<div class="dr">
+<div id="hdDaily"><div class="dr">
 <button id="prev" aria-label="前一天">‹</button>
 <div><div id="date"></div><div id="wk"></div></div>
 <button id="next" aria-label="後一天">›</button>
 </div>
 <button id="today" hidden>回到今天</button>
 <div class="ch"><span>讀經 1 分</span><span>·</span><span>默想 3 分</span><span>·</span><span>鼓勵 1 分</span><span>·</span><span>禱告 2 分</span></div>
-<div class="sk" id="streak"></div>
+<div class="sk" id="streak"></div></div>
+<div id="hdTopics" hidden><b>主題經文</b><span>依處境，找到對應的聖經經文</span></div>
+<div class="tabs"><button id="tb1" class="on" aria-pressed="true">每日靈修</button><button id="tb2" aria-pressed="false">主題經文</button></div>
 </header>
-<main>
+<main id="dailyMain">
 <section class="c dy"><h2>今日經文</h2><p id="verse"></p><p id="ref"></p></section>
 <section class="c dy"><h2>默想方向</h2><ol id="med"></ol></section>
 <section class="c dy"><h2>鼓勵的話</h2><p class="t" id="enc"></p></section>
@@ -61,9 +74,12 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 <button id="done" class="dy" aria-pressed="false">完成今日靈修</button>
 <div class="f">所有內容皆取自聖經（和合本）<br>目前內容共 60 天</div>
 </main>
+<main id="topicsMain" hidden></main>
 </div>
 <script>
-let D=[],START="";
+let D=[],START="",T=[];
+function show(t){$("dailyMain").hidden=t;$("topicsMain").hidden=!t;$("hdDaily").hidden=t;$("hdTopics").hidden=!t;$("tb1").classList.toggle("on",!t);$("tb2").classList.toggle("on",t);$("tb1").setAttribute("aria-pressed",!t);$("tb2").setAttribute("aria-pressed",t)}
+function buildTopics(){const m=$("topicsMain");m.textContent="";T.forEach(x=>{const d=document.createElement("details");d.className="c";const s=document.createElement("summary");s.textContent=x.t;d.appendChild(s);const p=document.createElement("p");p.className="sb";p.textContent=x.d||"";d.appendChild(p);x.v.forEach(v=>{const b=document.createElement("blockquote");const q=document.createElement("p");q.className="tv";q.textContent=v.v;const r=document.createElement("p");r.className="tr";r.textContent=v.r+"（和合本）";b.appendChild(q);b.appendChild(r);d.appendChild(b)});m.appendChild(d)})}
 const W="日一二三四五六",$=id=>document.getElementById(id);
 let off=0;
 function pad(n){return String(n).padStart(2,"0")}
@@ -101,9 +117,11 @@ $("prev").onclick=()=>{off--;render()};
 $("next").onclick=()=>{off++;render()};
 $("today").onclick=()=>{off=0;render()};
 async function init(){
-try{const r=await fetch("content.json",{cache:"no-cache"});const j=await r.json();D=j.days;START=j.startDate;render()}
+try{const r=await fetch("content.json",{cache:"no-cache"});const j=await r.json();D=j.days;START=j.startDate;T=j.topics||[];buildTopics();render()}
 catch(e){document.querySelector("main").innerHTML='<div class="c"><p class="t">內容暫時無法載入，請稍後再試。</p></div>'}
 }
+$("tb1").onclick=()=>show(false);
+$("tb2").onclick=()=>show(true);
 init();
 </script>
 </body>
