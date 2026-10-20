@@ -21,7 +21,7 @@ details.c summary{cursor:pointer;font-size:17px;font-weight:700;min-height:44px;
 blockquote{margin:0 0 14px;padding-left:12px;border-left:3px solid var(--ac)}
 .tv{font-family:'Noto Serif TC',serif;font-size:17px;line-height:1.8;margin:0}
 .tr{font-size:13px;color:var(--sub);margin:4px 0 0}
-#splash{position:fixed;inset:0;z-index:100;background:var(--head);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;text-align:center;cursor:pointer;transition:opacity .5s;animation:so .5s ease 2.6s forwards}
+#splash{position:fixed;inset:0;z-index:100;background:var(--head);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;text-align:center;cursor:pointer;transition:opacity .5s;animation:so .5s ease 4.5s forwards}
 #splash.out{opacity:0;pointer-events:none}
 #splash .n{font-family:'Noto Serif TC',serif;font-size:34px;font-weight:700;letter-spacing:4px}
 #splash .s{font-family:'Noto Serif TC',serif;font-size:17px;letter-spacing:2px;color:var(--ac)}
@@ -44,9 +44,7 @@ header{background:var(--head);color:#fff;padding:28px 24px 24px}
 #today{display:block;margin:12px auto 0;background:none;border:0;color:var(--ac);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;min-height:44px}
 main{padding:16px 16px 32px;display:flex;flex-direction:column;gap:14px}
 .c{background:var(--card);border-radius:16px;padding:22px}
-.c-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.c-head h2{margin:0}
-h2{font-size:13px;letter-spacing:2px;color:var(--sub)}
+h2{margin:0 0 10px;font-size:13px;letter-spacing:2px;color:var(--sub)}
 #verse{font-family:'Noto Serif TC',serif;font-size:21px;line-height:1.7;font-weight:500;margin:0}
 #ref{margin:10px 0 0;font-size:14px;color:var(--sub)}
 .t{font-size:16px;line-height:1.9;margin:0}
@@ -56,15 +54,14 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 #done{min-height:52px;border:0;border-radius:26px;background:var(--btn);color:var(--bt);font:inherit;font-size:17px;font-weight:700;cursor:pointer}
 #done.on{background:none;border:2px solid var(--ok);color:var(--ok)}
 .f{text-align:center;font-size:12px;color:var(--sub);line-height:1.7}
-
-/* 新增：筆記與收藏樣式 */
-.btn-fav{background:none;border:none;cursor:pointer;font-size:20px;padding:4px;color:var(--sub);line-height:1}
+.c-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.c-head h2{margin:0}
+.btn-fav{background:none;border:none;cursor:pointer;font-size:22px;min-width:44px;min-height:44px;color:var(--sub);line-height:1}
 .btn-fav.on{color:var(--ac)}
 .note-area{width:100%;min-height:90px;padding:12px;border-radius:10px;border:1px solid var(--hs);background:var(--bg);color:var(--text);font-family:inherit;font-size:15px;line-height:1.6;box-sizing:border-box;resize:vertical;margin-top:8px}
 .note-area:focus{outline:none;border-color:var(--ac)}
 .note-status{font-size:12px;color:var(--sub);text-align:right;margin-top:4px;min-height:16px}
-.fav-item{border-bottom:1px solid var(--hs);padding-bottom:16px;margin-bottom:16px}
-.fav-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.fav-item{border-bottom:1px solid var(--hs)}
 .fav-date{font-size:12px;color:var(--ac);font-weight:700;margin-bottom:4px}
 .fav-note{background:var(--bg);padding:10px 14px;border-radius:8px;font-size:14px;color:var(--text);margin-top:8px}
 </style>
@@ -78,11 +75,7 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 </div>
 <div class="w">
 <header>
-<nav class="tabs" aria-label="頁籤">
-  <button id="tb1" class="on" aria-pressed="true">每日靈修</button>
-  <button id="tb2" aria-pressed="false">主題經文</button>
-  <button id="tb3" aria-pressed="false">我的收藏</button>
-</nav>
+<nav class="tabs" aria-label="頁籤"><button id="tb1" class="on" aria-pressed="true">每日靈修</button><button id="tb2" aria-pressed="false">主題經文</button><button id="tb3" aria-pressed="false">我的收藏</button></nav>
 <div class="top"><span class="nm">每日職場靈修</span></div>
 <div class="sl">職場日常，因主而不同</div>
 <div id="hdDaily"><div class="dr">
@@ -96,239 +89,102 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 <div id="hdTopics" hidden><b>主題經文</b><span>依處境，找到對應的聖經經文</span></div>
 <div id="hdFavs" hidden><b>我的收藏與筆記</b><span>溫習被觸動的經文與靈修心得</span></div>
 </header>
-
 <main id="dailyMain">
-<section class="c dy">
-  <div class="c-head">
-    <h2>今日經文</h2>
-    <button id="favBtn" class="btn-fav" title="加入收藏" aria-label="收藏經文">★</button>
-  </div>
-  <p id="verse"></p>
-  <p id="ref"></p>
-</section>
+<section class="c dy"><div class="c-head"><h2>今日經文</h2><button id="favBtn" class="btn-fav" aria-label="收藏經文">☆</button></div><p id="verse"></p><p id="ref"></p></section>
 <section class="c dy"><h2>默想方向</h2><ol id="med"></ol></section>
 <section class="c dy"><h2>鼓勵的話</h2><p class="t" id="enc"></p></section>
 <section class="c dy"><h2>禱告</h2><p class="t" id="pray"></p></section>
-
-<!-- 新增：心得筆記區塊 -->
-<section class="c dy">
-  <h2>靈修心得與筆記</h2>
-  <textarea id="noteInput" class="note-area" placeholder="寫下今天的感動、回應或向神的禱告..."></textarea>
-  <div id="noteStatus" class="note-status"></div>
-</section>
-
+<section class="c dy"><h2>靈修心得與筆記</h2><textarea id="noteInput" class="note-area" placeholder="寫下今天的感動、回應或向神的禱告..."></textarea><div id="noteStatus" class="note-status"></div></section>
 <section class="c" id="end" hidden><h2>靈修完成</h2><p class="t">感謝神，你已經走完這一輪的靈修。新的內容正在預備中，請過些日子再回來。願主的話語繼續與你同行。</p></section>
 <button id="done" class="dy" aria-pressed="false">完成今日靈修</button>
 <div class="f">所有內容皆取自聖經（和合本）<br>目前內容共 60 天</div>
 </main>
-
 <main id="topicsMain" hidden></main>
-
-<!-- 新增：我的收藏與筆記頁面 -->
 <main id="favsMain" hidden></main>
 </div>
-
 <script>
-let D=[],START="",T=[];
+let D=[],START="",T=[],off=0,noteTimer=null;
 const W="日一二三四五六",$=id=>document.getElementById(id);
-let off=0;
-let noteTimer=null;
-
-function showTab(tabIndex){
-  $("dailyMain").hidden = (tabIndex !== 0);
-  $("topicsMain").hidden = (tabIndex !== 1);
-  $("favsMain").hidden = (tabIndex !== 2);
-  
-  $("hdDaily").hidden = (tabIndex !== 0);
-  $("hdTopics").hidden = (tabIndex !== 1);
-  $("hdFavs").hidden = (tabIndex !== 2);
-  
-  $("tb1").classList.toggle("on", tabIndex === 0);
-  $("tb2").classList.toggle("on", tabIndex === 1);
-  $("tb3").classList.toggle("on", tabIndex === 2);
-  
-  $("tb1").setAttribute("aria-pressed", tabIndex === 0);
-  $("tb2").setAttribute("aria-pressed", tabIndex === 1);
-  $("tb3").setAttribute("aria-pressed", tabIndex === 2);
-
-  if(tabIndex === 2) renderFavs();
-}
-
-function buildTopics(){
-  const m=$("topicsMain");m.textContent="";
-  T.forEach(x=>{
-    const d=document.createElement("details");d.className="c";
-    const s=document.createElement("summary");s.textContent=x.t;d.appendChild(s);
-    const p=document.createElement("p");p.className="sb";p.textContent=x.d||"";d.appendChild(p);
-    x.v.forEach(v=>{
-      const b=document.createElement("blockquote");
-      const q=document.createElement("p");q.className="tv";q.textContent=v.v;
-      const r=document.createElement("p");r.className="tr";r.textContent=v.r+"（和合本）";
-      b.appendChild(q);b.appendChild(r);d.appendChild(b);
-    });
-    m.appendChild(d);
-  });
-}
-
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function pad(n){return String(n).padStart(2,"0")}
-function isDone(d){try{return localStorage.getItem("done:"+d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()))==="1"}catch(e){return false}}
-function streakText(){
-  const d=new Date();let n=0;
-  if(!isDone(d))d.setDate(d.getDate()-1);
-  while(n<1000&&isDone(d)){n++;d.setDate(d.getDate()-1)}
-  return n>0?"連續 "+n+" 天靈修":"完成今日靈修，開始累積連續天數";
-}
-
-function getCurrentKey(){
-  const d=new Date();d.setDate(d.getDate()+off);
-  return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
-}
-
+function keyOf(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function showTab(t){
+[["dailyMain","hdDaily"],["topicsMain","hdTopics"],["favsMain","hdFavs"]].forEach((a,i)=>{$(a[0]).hidden=i!==t;$(a[1]).hidden=i!==t});
+["tb1","tb2","tb3"].forEach((id,i)=>{$(id).classList.toggle("on",i===t);$(id).setAttribute("aria-pressed",i===t)});
+if(t===2)renderFavs()}
+function buildTopics(){const m=$("topicsMain");m.textContent="";T.forEach(x=>{const d=document.createElement("details");d.className="c";const s=document.createElement("summary");s.textContent=x.t;d.appendChild(s);const p=document.createElement("p");p.className="sb";p.textContent=x.d||"";d.appendChild(p);x.v.forEach(v=>{const b=document.createElement("blockquote");const q=document.createElement("p");q.className="tv";q.textContent=v.v;const r=document.createElement("p");r.className="tr";r.textContent=v.r+"（和合本）";b.appendChild(q);b.appendChild(r);d.appendChild(b)});m.appendChild(d)})}
+function isDone(d){try{return localStorage.getItem("done:"+keyOf(d))==="1"}catch(e){return false}}
+function streakText(){const d=new Date();let n=0;if(!isDone(d))d.setDate(d.getDate()-1);while(n<1000&&isDone(d)){n++;d.setDate(d.getDate()-1)}return n>0?"連續 "+n+" 天靈修":"完成今日靈修，開始累積連續天數"}
 function render(){
-  if(!D.length)return;
-  const d=new Date();d.setDate(d.getDate()+off);
-  const key=getCurrentKey();
-  const n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.parse(START+"T00:00:00Z"))/864e5);
-  const i=Math.min(Math.max(n,0),D.length-1);
-  const over=n>=D.length;
-  
-  document.querySelectorAll(".dy").forEach(e=>e.hidden=over);
-  $("end").hidden=!over;
-  
-  const x=D[i];
-  $("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";
-  $("wk").textContent="星期"+W[d.getDay()]+(off===0?" · 今天":"")+" · "+(n<0?"尚未開始":over?"本輪已完成":"第 "+(i+1)+" 天");
-  $("ref").textContent=x.r+"（和合本）";
-  $("verse").textContent=x.v;
-  $("pray").textContent=x.p;
-  $("enc").textContent=x.e;
-  $("med").textContent="";
-  x.m.forEach(q=>{const li=document.createElement("li");li.textContent=q;$("med").appendChild(li)});
-  $("today").hidden=off===0;
-  
-  let done=false;
-  try{done=localStorage.getItem("done:"+key)==="1"}catch(e){}
-  const b=$("done");
-  b.textContent=done?"已完成今日靈修 ✓":"完成今日靈修";
-  b.setAttribute("aria-pressed",done);
-  b.classList.toggle("on",done);
-  $("streak").textContent=streakText();
-  b.onclick=()=>{try{localStorage.setItem("done:"+key,done?"0":"1")}catch(e){}render()};
-
-  // 載入收藏狀態
-  let isFav=false;
-  try{isFav=localStorage.getItem("fav:"+key)==="1"}catch(e){}
-  const favBtn=$("favBtn");
-  favBtn.classList.toggle("on", isFav);
-  favBtn.textContent = isFav ? "★" : "☆";
-  favBtn.onclick=()=>{
-    isFav = !isFav;
-    try{localStorage.setItem("fav:"+key, isFav?"1":"0")}catch(e){}
-    favBtn.classList.toggle("on", isFav);
-    favBtn.textContent = isFav ? "★" : "☆";
-  };
-
-  // 載入筆記內容
-  let note="";
-  try{note=localStorage.getItem("note:"+key)||""}catch(e){}
-  const noteInput=$("noteInput");
-  noteInput.value=note;
-  $("noteStatus").textContent="";
-  
-  noteInput.oninput=()=>{
-    $("noteStatus").textContent="儲存中...";
-    clearTimeout(noteTimer);
-    noteTimer=setTimeout(()=>{
-      try{localStorage.setItem("note:"+key, noteInput.value)}catch(e){}
-      $("noteStatus").textContent="已儲存";
-    }, 600);
-  };
+if(!D.length)return;
+const d=new Date();d.setDate(d.getDate()+off);
+const key=keyOf(d);
+const n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.parse(START+"T00:00:00Z"))/864e5);
+const i=Math.min(Math.max(n,0),D.length-1);
+const over=n>=D.length;
+document.querySelectorAll(".dy").forEach(e=>e.hidden=over);
+$("end").hidden=!over;
+const x=D[i];
+$("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";
+$("wk").textContent="星期"+W[d.getDay()]+(off===0?" · 今天":"")+" · "+(n<0?"尚未開始":over?"本輪已完成":"第 "+(i+1)+" 天");
+$("ref").textContent=x.r+"（和合本）";
+$("verse").textContent=x.v;
+$("pray").textContent=x.p;
+$("enc").textContent=x.e;
+$("med").textContent="";
+x.m.forEach(q=>{const li=document.createElement("li");li.textContent=q;$("med").appendChild(li)});
+$("today").hidden=off===0;
+let done=false;
+try{done=localStorage.getItem("done:"+key)==="1"}catch(e){}
+const b=$("done");
+b.textContent=done?"已完成今日靈修 ✓":"完成今日靈修";
+b.setAttribute("aria-pressed",done);
+b.classList.toggle("on",done);
+$("streak").textContent=streakText();
+b.onclick=()=>{try{localStorage.setItem("done:"+key,done?"0":"1")}catch(e){}render()};
+let isFav=false;
+try{isFav=localStorage.getItem("fav:"+key)==="1"}catch(e){}
+const fb=$("favBtn");
+fb.classList.toggle("on",isFav);fb.textContent=isFav?"★":"☆";
+fb.onclick=()=>{isFav=!isFav;try{localStorage.setItem("fav:"+key,isFav?"1":"0")}catch(e){}fb.classList.toggle("on",isFav);fb.textContent=isFav?"★":"☆"};
+let note="";
+try{note=localStorage.getItem("note:"+key)||""}catch(e){}
+const ni=$("noteInput");
+ni.value=note;$("noteStatus").textContent="";
+ni.oninput=()=>{$("noteStatus").textContent="儲存中...";clearTimeout(noteTimer);noteTimer=setTimeout(()=>{try{localStorage.setItem("note:"+key,ni.value)}catch(e){}$("noteStatus").textContent="已儲存"},600)};
 }
-
-// 渲染「我的收藏與筆記」列表
 function renderFavs(){
-  const m=$("favsMain");
-  m.textContent="";
-  
-  let items=[];
-  try{
-    for(let i=0; i<localStorage.length; i++){
-      const k=localStorage.key(i);
-      if(k.startsWith("fav:") && localStorage.getItem(k)==="1"){
-        const dateKey=k.replace("fav:","");
-        items.push(dateKey);
-      } else if(k.startsWith("note:") && localStorage.getItem(k).trim()!==""){
-        const dateKey=k.replace("note:","");
-        if(!items.includes(dateKey)) items.push(dateKey);
-      }
-    }
-  }catch(e){}
-
-  items.sort().reverse(); // 依照日期降序排列
-
-  if(items.length===0){
-    m.innerHTML='<div class="c"><p class="t" style="text-align:center;color:var(--sub);">目前還沒有收藏經文或寫下筆記。<br>在每日靈修頁面點擊 ★ 或輸入筆記即可儲存！</p></div>';
-    return;
-  }
-
-  items.forEach(dateKey=>{
-    const card=document.createElement("div");
-    card.className="c fav-item";
-    
-    // 計算這是第幾天的內容
-    const d=new Date(dateKey+"T00:00:00Z");
-    const n=Math.round((Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())-Date.parse(START+"T00:00:00Z"))/864e5);
-    
-    let verseContent="", refContent="";
-    if(n>=0 && n<D.length){
-      verseContent=D[n].v;
-      refContent=D[n].r;
-    }
-
-    const isFav = localStorage.getItem("fav:"+dateKey)==="1";
-    const noteText = localStorage.getItem("note:"+dateKey)||"";
-
-    let html = `<div class="fav-date">${dateKey} ${n>=0?'(第 '+(n+1)+' 天)':''} ${isFav?'★ 已收藏':''}</div>`;
-    if(verseContent){
-      html += `<blockquote><p class="tv">${verseContent}</p><p class="tr">${refContent}（和合本）</p></blockquote>`;
-    }
-    if(noteText){
-      html += `<div class="fav-note"><strong>我的筆記：</strong><br>${noteText.replace(/\n/g, '<br>')}</div>`;
-    }
-    
-    card.innerHTML=html;
-    m.appendChild(card);
-  });
-}
-
+const m=$("favsMain");m.textContent="";
+let items=[];
+try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);
+if(k.startsWith("fav:")&&localStorage.getItem(k)==="1"){const dk=k.slice(4);if(!items.includes(dk))items.push(dk)}
+else if(k.startsWith("note:")&&(localStorage.getItem(k)||"").trim()!==""){const dk=k.slice(5);if(!items.includes(dk))items.push(dk)}}}catch(e){}
+items.sort().reverse();
+if(!items.length){m.innerHTML='<div class="c"><p class="t" style="text-align:center;color:var(--sub)">目前還沒有收藏經文或寫下筆記。<br>在每日靈修頁面點擊 ☆ 或輸入筆記即可儲存。</p></div>';return}
+items.forEach(dk=>{
+const card=document.createElement("div");card.className="c fav-item";
+const d=new Date(dk+"T00:00:00Z");
+const n=Math.round((d.getTime()-Date.parse(START+"T00:00:00Z"))/864e5);
+let isFav=false,note="";
+try{isFav=localStorage.getItem("fav:"+dk)==="1";note=localStorage.getItem("note:"+dk)||""}catch(e){}
+let h='<div class="fav-date">'+esc(dk)+(n>=0&&n<D.length?" (第 "+(n+1)+" 天)":"")+(isFav?" ★ 已收藏":"")+"</div>";
+if(n>=0&&n<D.length)h+='<blockquote><p class="tv">'+esc(D[n].v)+'</p><p class="tr">'+esc(D[n].r)+"（和合本）</p></blockquote>";
+if(note.trim())h+='<div class="fav-note"><strong>我的筆記：</strong><br>'+esc(note).replace(/\n/g,"<br>")+"</div>";
+card.innerHTML=h;m.appendChild(card)})}
 $("prev").onclick=()=>{off--;render()};
 $("next").onclick=()=>{off++;render()};
 $("today").onclick=()=>{off=0;render()};
-
 async function init(){
-  try{
-    const r=await fetch("content.json",{cache:"no-cache"});
-    const j=await r.json();
-    D=j.days;START=j.startDate;T=j.topics||[];
-    buildTopics();
-    render();
-  }catch(e){
-    document.querySelector("main").innerHTML='<div class="c"><p class="t">內容暫時無法載入，請稍後再試。</p></div>';
-  }
+try{const r=await fetch("content.json",{cache:"no-cache"});const j=await r.json();D=j.days;START=j.startDate;T=j.topics||[];buildTopics();render()}
+catch(e){document.querySelector("main").innerHTML='<div class="c"><p class="t">內容暫時無法載入，請稍後再試。</p></div>'}
 }
-
 $("tb1").onclick=()=>showTab(0);
 $("tb2").onclick=()=>showTab(1);
 $("tb3").onclick=()=>showTab(2);
-
-(function(){
-  const s=$("splash");let seen=false;
-  try{seen=sessionStorage.getItem("splash")==="1"}catch(e){}
-  function hide(){s.classList.add("out");setTimeout(()=>s.remove(),600);try{sessionStorage.setItem("splash","1")}catch(e){}}
-  if(seen){s.remove();return}
-  s.onclick=hide;setTimeout(hide,1800)
-})();
-
+(function(){const s=$("splash");let seen=false;try{seen=sessionStorage.getItem("splash")==="1"}catch(e){}
+function hide(){s.classList.add("out");setTimeout(()=>s.remove(),600);try{sessionStorage.setItem("splash","1")}catch(e){}}
+if(seen){s.remove();return}
+s.onclick=hide;setTimeout(hide,3000)})();
 init();
 </script>
 </body>
