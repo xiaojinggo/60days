@@ -90,7 +90,7 @@ li::before{content:counter(q);flex:none;width:26px;height:26px;border-radius:13p
 <div id="hdFavs" hidden><b>我的收藏與筆記</b><span>溫習被觸動的經文與靈修心得</span></div>
 </header>
 <main id="dailyMain">
-<section class="c dy"><div class="c-head"><h2>今日經文</h2><button id="favBtn" class="btn-fav" aria-label="收藏經文">☆</button></div><p id="verse"></p><p id="ref"></p></section>
+<section class="c dy"><div class="c-head"><h2>今日經文</h2><button id="favBtn" class="btn-fav" aria-label="收藏經文">☆</button></div><p id="verse"></p><p id="ref"></p><details id="ctxBox" style="margin-top:14px;border-top:1px dashed var(--hs);padding-top:10px;" hidden><summary style="cursor:pointer;font-size:14px;color:var(--ac);font-weight:700;user-select:none;min-height:36px;display:flex;align-items:center;">📖 查看前後文</summary><div style="margin-top:8px;padding:12px;background:var(--bg);border-radius:10px;"><p id="ctxVerse" style="font-family:'Noto Serif TC',serif;font-size:15px;line-height:1.8;margin:0;"></p><p id="ctxRef" style="font-size:12px;color:var(--sub);margin:6px 0 0;text-align:right;"></p></div></details></section>
 <section class="c dy"><h2>默想方向</h2><ol id="med"></ol></section>
 <section class="c dy"><h2>鼓勵的話</h2><p class="t" id="enc"></p></section>
 <section class="c dy"><h2>禱告</h2><p class="t" id="pray"></p></section>
@@ -129,6 +129,9 @@ $("date").textContent=d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"
 $("wk").textContent="星期"+W[d.getDay()]+(off===0?" · 今天":"")+" · "+(n<0?"尚未開始":over?"本輪已完成":"第 "+(i+1)+" 天");
 $("ref").textContent=x.r+"（和合本）";
 $("verse").textContent=x.v;
+const cb=$("ctxBox");
+if(x.cv){cb.hidden=false;cb.open=false;$("ctxVerse").textContent=x.cv;$("ctxRef").textContent=(x.cr||x.r)+"（和合本）"}
+else{cb.hidden=true}
 $("pray").textContent=x.p;
 $("enc").textContent=x.e;
 $("med").textContent="";
